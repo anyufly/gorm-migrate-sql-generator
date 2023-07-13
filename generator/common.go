@@ -78,6 +78,10 @@ func (result *MigrateSQLResult) Down() map[string][]string {
 	return result.down.ToMap()
 }
 
+func (result *MigrateSQLResult) Empty() bool {
+	return len(result.up) == 0
+}
+
 type MigrateSQLGenerator interface {
 	Generate(values ...interface{}) (*MigrateSQLResult, error)
 }
