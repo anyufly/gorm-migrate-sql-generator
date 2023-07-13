@@ -1,0 +1,1 @@
+# gorm-migrate-sql-generator
