@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"github.com/anyufly/gorm-migrate-sql-generator/generator"
+	"github.com/anyufly/migrate-sql-result"
 	"gorm.io/gorm"
 )
 
@@ -19,14 +20,14 @@ func MigrateSQLGenerator(tx *gorm.DB) generator.MigrateSQLGenerator {
 	}
 }
 
-func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*generator.MigrateSQLResult, error) {
+func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*result.MigrateSQLResult, error) {
 	m, err := loadMigrator(sqlGenerator.tx)
 
 	if err != nil {
 		return nil, err
 	}
 
-	result := generator.NewMigrateSQLResult()
+	migrateResult := result.NewMigrateSQLResult()
 
 	for _, value := range m.ReorderModels(values, true) {
 		queryTx := m.DB.Session(&gorm.Session{
@@ -42,13 +43,13 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*gener
 			if err != nil {
 				return nil, err
 			}
-			result.AppendUp(up...)
+			migrateResult.AppendUp(up...)
 
 			down, err := sqlGenerator.DropTable(execTx, value)
 			if err != nil {
 				return nil, err
 			}
-			result.AppendDown(down...)
+			migrateResult.AppendDown(down...)
 		} else {
 			if err := m.RunWithValue(value, func(stmt *gorm.Statement) error {
 				columnTypes, err := queryTx.Migrator().ColumnTypes(value)
@@ -74,13 +75,13 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*gener
 						if err != nil {
 							return err
 						}
-						result.AppendUp(up)
+						migrateResult.AppendUp(up)
 
 						down, err := sqlGenerator.DropColumn(execTx, value, dbName)
 						if err != nil {
 							return err
 						}
-						result.AppendDown(down)
+						migrateResult.AppendDown(down)
 					} else {
 						// found, smartly migrate
 						field := stmt.Schema.FieldsByDBName[dbName]
@@ -89,13 +90,13 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*gener
 						if err != nil {
 							return err
 						}
-						result.AppendUp(up)
+						migrateResult.AppendUp(up)
 
 						down, err := sqlGenerator.MigrateColumnRecover(execTx, value, field, foundColumn)
 						if err != nil {
 							return err
 						}
-						result.AppendDown(down)
+						migrateResult.AppendDown(down)
 					}
 				}
 
@@ -111,13 +112,13 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*gener
 							if err != nil {
 								return err
 							}
-							result.AppendUp(up)
+							migrateResult.AppendUp(up)
 
 							down, err := sqlGenerator.DropConstraint(execTx, value, constraint.Name)
 							if err != nil {
 								return err
 							}
-							result.AppendDown(down)
+							migrateResult.AppendDown(down)
 						}
 					}
 				}
@@ -128,13 +129,13 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*gener
 						if err != nil {
 							return err
 						}
-						result.AppendUp(up)
+						migrateResult.AppendUp(up)
 
 						down, err := sqlGenerator.DropConstraint(execTx, value, chk.Name)
 						if err != nil {
 							return err
 						}
-						result.AppendDown(down)
+						migrateResult.AppendDown(down)
 					}
 				}
 
@@ -145,13 +146,13 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*gener
 						if err != nil {
 							return err
 						}
-						result.AppendUp(up)
+						migrateResult.AppendUp(up)
 
 						down, err := sqlGenerator.DropIndex(execTx, value, idx.Name)
 						if err != nil {
 							return err
 						}
-						result.AppendDown(down)
+						migrateResult.AppendDown(down)
 					}
 				}
 
@@ -161,5 +162,5 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*gener
 			}
 		}
 	}
-	return result, nil
+	return migrateResult, nil
 }

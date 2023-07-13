@@ -1,13 +1,13 @@
 package mysql
 
 import (
-	"github.com/anyufly/gorm-migrate-sql-generator/generator"
+	"github.com/anyufly/migrate-sql-result"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-func (sqlGenerator *migrateSQLGenerator) DropConstraint(execTx *gorm.DB, value interface{}, name string) (*generator.SQLForTable, error) {
-	var sqlForTable *generator.SQLForTable
+func (sqlGenerator *migrateSQLGenerator) DropConstraint(execTx *gorm.DB, value interface{}, name string) (*result.SQLForTable, error) {
+	var sqlForTable *result.SQLForTable
 	m, err := loadMigratorWithDryRun(execTx)
 	if err != nil {
 		return nil, err

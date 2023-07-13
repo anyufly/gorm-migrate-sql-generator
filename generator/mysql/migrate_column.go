@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/anyufly/gorm-migrate-sql-generator/generator"
+	result "github.com/anyufly/migrate-sql-result"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -111,9 +111,9 @@ func shouldAlterColumn(m mysql.Migrator, field *schema.Field, columnType gorm.Co
 }
 
 func (sqlGenerator *migrateSQLGenerator) MigrateColumn(
-	execTx *gorm.DB, value interface{}, field *schema.Field, columnType gorm.ColumnType) (*generator.SQLForTable, error) {
+	execTx *gorm.DB, value interface{}, field *schema.Field, columnType gorm.ColumnType) (*result.SQLForTable, error) {
 
-	var sql *generator.SQLForTable
+	var sql *result.SQLForTable
 	m, err := loadMigratorWithDryRun(execTx)
 	if err != nil {
 		return nil, err
@@ -127,9 +127,9 @@ func (sqlGenerator *migrateSQLGenerator) MigrateColumn(
 }
 
 func (sqlGenerator *migrateSQLGenerator) MigrateColumnRecover(
-	execTx *gorm.DB, value interface{}, field *schema.Field, columnType gorm.ColumnType) (*generator.SQLForTable, error) {
+	execTx *gorm.DB, value interface{}, field *schema.Field, columnType gorm.ColumnType) (*result.SQLForTable, error) {
 
-	var sql *generator.SQLForTable
+	var sql *result.SQLForTable
 	m, err := loadMigratorWithDryRun(execTx)
 	if err != nil {
 		return nil, err

@@ -1,17 +1,17 @@
 package mysql
 
 import (
-	"github.com/anyufly/gorm-migrate-sql-generator/generator"
+	"github.com/anyufly/migrate-sql-result"
 	"gorm.io/gorm"
 )
 
-func (sqlGenerator *migrateSQLGenerator) DropTable(execTx *gorm.DB, values ...interface{}) ([]*generator.SQLForTable, error) {
+func (sqlGenerator *migrateSQLGenerator) DropTable(execTx *gorm.DB, values ...interface{}) ([]*result.SQLForTable, error) {
 	m, err := loadMigratorWithDryRun(execTx)
 	if err != nil {
 		return nil, err
 	}
 
-	sqlList := make([]*generator.SQLForTable, 0, 10)
+	sqlList := make([]*result.SQLForTable, 0, 10)
 
 	values = m.ReorderModels(values, false)
 	for i := len(values) - 1; i >= 0; i-- {

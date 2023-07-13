@@ -2,15 +2,15 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/anyufly/gorm-migrate-sql-generator/generator"
+	"github.com/anyufly/migrate-sql-result"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"strings"
 )
 
-func (sqlGenerator *migrateSQLGenerator) AlterColumn(execTx *gorm.DB, value interface{}, field string) (*generator.SQLForTable, error) {
-	var sql *generator.SQLForTable
+func (sqlGenerator *migrateSQLGenerator) AlterColumn(execTx *gorm.DB, value interface{}, field string) (*result.SQLForTable, error) {
+	var sql *result.SQLForTable
 	m, err := loadMigratorWithDryRun(execTx)
 	if err != nil {
 		return nil, err
@@ -69,8 +69,8 @@ func (sqlGenerator *migrateSQLGenerator) parseColumnType(m mysql.Migrator, colum
 	return
 }
 
-func (sqlGenerator *migrateSQLGenerator) RecoverAlter(execTx *gorm.DB, value interface{}, columnType gorm.ColumnType) (*generator.SQLForTable, error) {
-	var sql *generator.SQLForTable
+func (sqlGenerator *migrateSQLGenerator) RecoverAlter(execTx *gorm.DB, value interface{}, columnType gorm.ColumnType) (*result.SQLForTable, error) {
+	var sql *result.SQLForTable
 	m, err := loadMigratorWithDryRun(execTx)
 	if err != nil {
 		return nil, err

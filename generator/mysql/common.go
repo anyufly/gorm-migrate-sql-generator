@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"github.com/anyufly/gorm-migrate-sql-generator/generator"
+	"github.com/anyufly/migrate-sql-result"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -55,9 +56,9 @@ func loadMigratorWithDryRun(tx *gorm.DB) (mysql.Migrator, error) {
 	return loadMigrator(dryRunTx)
 }
 
-func loadStmtSQL(db *gorm.DB, table string) *generator.SQLForTable {
+func loadStmtSQL(db *gorm.DB, table string) *result.SQLForTable {
 	sql, vars := db.Statement.SQL.String(), db.Statement.Vars
 	explainedSQL := db.Dialector.Explain(sql, vars...)
 
-	return generator.NewSQLForTable(table, explainedSQL)
+	return result.NewSQLForTable(table, explainedSQL)
 }
