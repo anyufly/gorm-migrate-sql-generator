@@ -75,13 +75,18 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*resul
 						if err != nil {
 							return err
 						}
-						migrateResult.AppendUp(up)
+						if up != nil {
+							migrateResult.AppendUp(up)
+						}
 
 						down, err := sqlGenerator.DropColumn(execTx, value, dbName)
 						if err != nil {
 							return err
 						}
-						migrateResult.AppendDown(down)
+						if down != nil {
+							migrateResult.AppendDown(down)
+						}
+
 					} else {
 						// found, smartly migrate
 						field := stmt.Schema.FieldsByDBName[dbName]
@@ -90,13 +95,19 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*resul
 						if err != nil {
 							return err
 						}
-						migrateResult.AppendUp(up)
+
+						if up != nil {
+							migrateResult.AppendUp(up)
+						}
 
 						down, err := sqlGenerator.MigrateColumnRecover(execTx, value, field, foundColumn)
 						if err != nil {
 							return err
 						}
-						migrateResult.AppendDown(down)
+
+						if down != nil {
+							migrateResult.AppendDown(down)
+						}
 					}
 				}
 
@@ -112,13 +123,20 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*resul
 							if err != nil {
 								return err
 							}
-							migrateResult.AppendUp(up)
+
+							if up != nil {
+								migrateResult.AppendUp(up)
+							}
 
 							down, err := sqlGenerator.DropConstraint(execTx, value, constraint.Name)
 							if err != nil {
 								return err
 							}
-							migrateResult.AppendDown(down)
+
+							if down != nil {
+								migrateResult.AppendDown(down)
+							}
+
 						}
 					}
 				}
@@ -129,13 +147,19 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*resul
 						if err != nil {
 							return err
 						}
-						migrateResult.AppendUp(up)
+
+						if up != nil {
+							migrateResult.AppendUp(up)
+						}
 
 						down, err := sqlGenerator.DropConstraint(execTx, value, chk.Name)
 						if err != nil {
 							return err
 						}
-						migrateResult.AppendDown(down)
+
+						if down != nil {
+							migrateResult.AppendDown(down)
+						}
 					}
 				}
 
@@ -146,13 +170,18 @@ func (sqlGenerator *migrateSQLGenerator) Generate(values ...interface{}) (*resul
 						if err != nil {
 							return err
 						}
-						migrateResult.AppendUp(up)
+						if up != nil {
+							migrateResult.AppendUp(up)
+						}
 
 						down, err := sqlGenerator.DropIndex(execTx, value, idx.Name)
 						if err != nil {
 							return err
 						}
-						migrateResult.AppendDown(down)
+
+						if down != nil {
+							migrateResult.AppendDown(down)
+						}
 					}
 				}
 
